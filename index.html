@@ -42,6 +42,7 @@
             age: 10,
             salary: 1200.04,
             site: "https://www.google.com",
+            image: "photo/2023/07/05/04/45/european-shorthair-8107433_1280.jpg",
           },
           {
             id: 3,
@@ -55,6 +56,7 @@
             age: 20,
             salary: 2560.59,
             site: "https://www.cesan.com.br",
+            image: "photo/2023/05/14/09/39/boho-7992342_1280.jpg",
           },
           {
             id: 4,
@@ -67,6 +69,7 @@
             age: 30,
             salary: 1800.0,
             site: "https://www.yahoo.com.br",
+            image: "photo/2023/01/02/10/22/breakfast-7691784_1280.jpg",
           },
           {
             id: 5,
@@ -79,6 +82,7 @@
             age: 50,
             salary: 16800.3,
             site: "https://www.uol.com.br",
+            image: "photo/2023/07/03/19/35/border-collie-8104878_1280.jpg",
           },
           {
             id: 6,
@@ -92,6 +96,7 @@
             age: 50,
             salary: 7200.0,
             site: "https://www.globo.com",
+            image: "photo/2023/05/16/06/08/bees-7996596_1280.jpg",
           },
         ];
 
@@ -250,6 +255,28 @@
         $("#btnHideRatingColumn").on("click", () => {
           tableMan.updateColumnDefinition("rating", { visible: false });
         });
+        $("#btnCreateImageColumn").on("click", () => {
+          tableMan.addColumn({
+            title: "Image",
+            field: "image",
+            hozAlign: "center",
+            sorter: "string",
+            formatter: "image",
+            formatterParams: {
+              height: "25px",
+              width: "25px",
+              urlPrefix: "https://cdn.pixabay.com/",
+              urlSuffix: "",
+            },
+            cellClick: function (e, cell) {
+              const url = `https://cdn.pixabay.com/${cell._cell.initialValue}`;
+              window.open(url, "blank");
+            },
+          });
+        });
+        $("#btnDeleteImageColumn").on("click", () => {
+          tableMan.deleteColumn("image");
+        });
       });
     </script>
     <br />
@@ -259,5 +286,17 @@
     <br />
     <input type="button" id="btnShowRatingColumn" value="Show Rating Column" />
     <input type="button" id="btnHideRatingColumn" value="Hide Rating Column" />
+    <br />
+    <br />
+    <input
+      type="button"
+      id="btnCreateImageColumn"
+      value="Create Image Column"
+    />
+    <input
+      type="button"
+      id="btnDeleteImageColumn"
+      value="Delete Image Column"
+    />
   </body>
 </html>
