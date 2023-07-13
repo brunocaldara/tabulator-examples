@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tablulator Examples</title>
+    <link
+      href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h2>Tabela criada com colunas automáticas</h2>
+    <div id="example-table-auto"></div>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"
+    ></script>
+    <br />
+    <h2>Tabela criada com colunas manuais</h2>
+    <div id="example-table-man"></div>
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
+    <!--Dependencia para lidar com datas-->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        //table data
+        const tabledata = [
+          {
+            id: 1,
+            name: "Oli Bob",
+            progress: 12, //add input editor to the name column
+            gender: "female",
+            rating: 2,
+            col: "blue",
+            dob: "1982-05-14",
+            car: true,
+            age: 10,
+            salary: 1200.04,
+            site: "https://www.google.com",
+          },
+          {
+            id: 3,
+            name: "Christine Lobowski",
+            progress: 42,
+            gender: "female",
+            rating: 0,
+            col: "green",
+            dob: "1984-04-22",
+            car: true,
+            age: 20,
+            salary: 2560.59,
+            site: "https://www.cesan.com.br",
+          },
+          {
+            id: 4,
+            name: "Brendon Philips",
+            progress: 100,
+            gender: "male",
+            rating: 1,
+            col: "orange",
+            dob: "1980-08-01",
+            age: 30,
+            salary: 1800.0,
+            site: "https://www.yahoo.com.br",
+          },
+          {
+            id: 5,
+            name: "Margret Marmajuke",
+            progress: 16,
+            gender: "female",
+            rating: 5,
+            col: "yellow",
+            dob: "1999-01-30",
+            age: 50,
+            salary: 16800.3,
+            site: "https://www.uol.com.br",
+          },
+          {
+            id: 6,
+            name: "Frank Harbours",
+            progress: 38,
+            gender: "male",
+            rating: 4,
+            col: "red",
+            dob: "1966-05-12",
+            car: 1,
+            age: 50,
+            salary: 7200.0,
+            site: "https://www.globo.com",
+          },
+        ];
+
+        //initialize table automatically
+        const tableAuto = new Tabulator("#example-table-auto", {
+          data: tabledata, //assign data to table
+          autoColumns: true, //create columns from data field names
+          autoColumnsDefinitions: [
+            { field: "name", editor: "input" },
+            { field: "age", headerFilter: true },
+          ],
+        });
+
+        //initialize tabela manually
+        const tableMan = new Tabulator("#example-table-man", {
+          data: tabledata,
+          columns: [
+            {
+              title: "Id",
+              field: "id",
+              sorter: "number",
+              editor: false,
+              hozAlign: "right",
+              headerFilter: false,
+              formatter: "plaintext",
+              cellClick: function (e, cell) {
+                console.log("cell click", cell);
+              },
+            },
+            {
+              title: "Name",
+              field: "name",
+              sorter: "string",
+              editor: true,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "Progress",
+              field: "progress",
+              sorter: "number",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "progress",
+              formatterParams: {
+                min: 0,
+                max: 100,
+                color: ["red", "orange", "green"],
+                legendColor: "#000000",
+                legendAlign: "center",
+                legend: function (value) {
+                  return `${value} %`;
+                },
+              },
+            },
+            {
+              title: "Car",
+              field: "car",
+              sorter: "boolean",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "tickCross",
+            },
+            {
+              title: "Dob",
+              field: "dob",
+              sorter: "date",
+              sorterParams: {
+                format: "yyyy-MM-dd",
+                alignEmptyValues: "top",
+              },
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "datetime",
+              formatterParams: {
+                inputFormat: "yyyy-MM-dd",
+                outputFormat: "dd/MM/yyyy",
+                invalidPlaceholder: "(invalid date)",
+                timezone: "America/Sao_Paulo",
+              },
+            },
+            {
+              title: "Salary",
+              field: "salary",
+              sorter: "number",
+              sorterParams: {
+                thousandSeparator: ".",
+                decimalSeparator: ",",
+                alignEmptyValues: "top",
+              },
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "money",
+              formatterParams: {
+                decimal: ",",
+                thousand: ".",
+                symbol: "R$ ",
+                symbolAfter: "",
+                negativeSign: true,
+                precision: 2,
+              },
+            },
+            {
+              title: "Site",
+              field: "site",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: false,
+              formatter: "link",
+              formatterParams: {
+                labelField: "site",
+                target: "_blank",
+              },
+            },
+            {
+              title: "Color",
+              field: "col",
+              sorter: "string",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "color",
+              visible: false,
+            },
+            {
+              title: "Rating",
+              field: "rating",
+              sorter: "number",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "star",
+              formatterParams: {
+                stars: 5,
+              },
+              visible: false,
+            },
+          ],
+        });
+
+        $("#btnShowColorColumn").on("click", () => {
+          tableMan.updateColumnDefinition("col", { visible: true });
+        });
+        $("#btnHideColorColumn").on("click", () => {
+          tableMan.updateColumnDefinition("col", { visible: false });
+        });
+        $("#btnShowRatingColumn").on("click", () => {
+          tableMan.updateColumnDefinition("rating", { visible: true });
+        });
+        $("#btnHideRatingColumn").on("click", () => {
+          tableMan.updateColumnDefinition("rating", { visible: false });
+        });
+      });
+    </script>
+    <br />
+    <input type="button" id="btnShowColorColumn" value="Show Color Column" />
+    <input type="button" id="btnHideColorColumn" value="Hide Color Column" />
+    <br />
+    <br />
+    <input type="button" id="btnShowRatingColumn" value="Show Rating Column" />
+    <input type="button" id="btnHideRatingColumn" value="Hide Rating Column" />
+  </body>
+</html>
