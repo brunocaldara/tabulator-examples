@@ -122,7 +122,7 @@
               hozAlign: "right",
               headerFilter: false,
               formatter: "plaintext",
-              cellClick: function (e, cell) {
+              cellClick: (e, cell) => {
                 console.log("cell click", cell);
               },
             },
@@ -149,7 +149,7 @@
                 color: ["red", "orange", "green"],
                 legendColor: "#000000",
                 legendAlign: "center",
-                legend: function (value) {
+                legend: (value) => {
                   return `${value} %`;
                 },
               },
@@ -268,7 +268,7 @@
               urlPrefix: "https://cdn.pixabay.com/",
               urlSuffix: "",
             },
-            cellClick: function (e, cell) {
+            cellClick: (e, cell) => {
               const url = `https://cdn.pixabay.com/${cell._cell.initialValue}`;
               window.open(url, "blank");
             },
