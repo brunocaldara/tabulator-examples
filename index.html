@@ -113,10 +113,13 @@
         //initialize tabela manually
         const tableMan = new Tabulator("#example-table-man", {
           data: tabledata,
+          responsiveLayout: "collapse",
           columns: [
             {
               title: "Id",
               field: "id",
+              resizable: "false",
+              width: "5%",
               sorter: "number",
               editor: false,
               hozAlign: "right",
@@ -129,6 +132,8 @@
             {
               title: "Name",
               field: "name",
+              resizable: "false",
+              width: "10%",
               sorter: "string",
               editor: true,
               hozAlign: "left",
@@ -138,6 +143,8 @@
             {
               title: "Progress",
               field: "progress",
+              resizable: "false",
+              width: "5%",
               sorter: "number",
               editor: false,
               hozAlign: "center",
@@ -157,6 +164,8 @@
             {
               title: "Car",
               field: "car",
+              resizable: "false",
+              width: "5%",
               sorter: "boolean",
               editor: false,
               hozAlign: "center",
@@ -166,6 +175,8 @@
             {
               title: "Dob",
               field: "dob",
+              resizable: "false",
+              width: "5%",
               sorter: "date",
               sorterParams: {
                 format: "yyyy-MM-dd",
@@ -185,6 +196,8 @@
             {
               title: "Salary",
               field: "salary",
+              resizable: "false",
+              width: "5%",
               sorter: "number",
               sorterParams: {
                 thousandSeparator: ".",
@@ -207,6 +220,8 @@
             {
               title: "Site",
               field: "site",
+              resizable: "false",
+              width: "15%",
               sorter: "string",
               editor: false,
               hozAlign: "left",
@@ -220,6 +235,8 @@
             {
               title: "Color",
               field: "col",
+              resizable: "false",
+              width: "5%",
               sorter: "string",
               editor: false,
               hozAlign: "center",
@@ -230,6 +247,8 @@
             {
               title: "Rating",
               field: "rating",
+              resizable: "false",
+              width: "5%",
               sorter: "number",
               editor: false,
               hozAlign: "center",

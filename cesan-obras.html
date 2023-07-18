@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tablulator Examples</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.5.0/css/tabulator_modern.min.css"
+    />
+  </head>
+  <body>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"
+    ></script>
+    <h2>Tabela criada com colunas manuais</h2>
+    <div id="example-table-man"></div>
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
+    <!--Dependencia para lidar com datas-->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        const tableMan = new Tabulator("#example-table-man", {
+          data: payload,
+          responsiveLayout: "collapse",
+          columns: [
+            {
+              title: "MUNICÍPIO",
+              field: "MUNICÍPIO",
+              resizable: "false",
+              width: "15%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "right",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "EMPREENDIMENTO",
+              field: "EMPREENDIMENTO",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "ESCOPO",
+              field: "ESCOPO",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "SERVIÇO",
+              field: "SERVIÇO",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "SITUAÇÃO",
+              field: "SITUAÇÃO PROJETO",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "PRAZO",
+              field: "PRAZO PROJETO",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "EXECUÇÃO",
+              field: "EXECUÇÃO PROJETO",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+          ],
+        });
+      });
+    </script>
+  </body>
+</html>
