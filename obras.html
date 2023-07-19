@@ -28,6 +28,19 @@
         const tableMan = new Tabulator("#example-table-man", {
           data: payload,
           responsiveLayout: "collapse",
+          ajaxResponse: function (url, params, response) {
+            if (Object.prototype.toString.call(response) === "[object Array]") {
+              return response;
+            } else {
+              if (
+                Object.prototype.toString.call(response) === "[object Object]"
+              ) {
+                var rsArray = [];
+                rsArray.push(response);
+                return rsArray;
+              }
+            }
+          },
           columns: [
             {
               title: "MUNICÍPIO",
@@ -73,39 +86,39 @@
               headerFilter: true,
               formatter: "plaintext",
             },
-            {
-              title: "SITUAÇÃO",
-              field: "SITUAÇÃO PROJETO",
-              resizable: "false",
-              width: "10%",
-              sorter: "string",
-              editor: false,
-              hozAlign: "left",
-              headerFilter: true,
-              formatter: "plaintext",
-            },
-            {
-              title: "PRAZO",
-              field: "PRAZO PROJETO",
-              resizable: "false",
-              width: "10%",
-              sorter: "string",
-              editor: false,
-              hozAlign: "left",
-              headerFilter: true,
-              formatter: "plaintext",
-            },
-            {
-              title: "EXECUÇÃO",
-              field: "EXECUÇÃO PROJETO",
-              resizable: "false",
-              width: "10%",
-              sorter: "string",
-              editor: false,
-              hozAlign: "left",
-              headerFilter: true,
-              formatter: "plaintext",
-            },
+            // {
+            //   title: "SITUAÇÃO",
+            //   field: "SITUAÇÃO PROJETO",
+            //   resizable: "false",
+            //   width: "10%",
+            //   sorter: "string",
+            //   editor: false,
+            //   hozAlign: "left",
+            //   headerFilter: true,
+            //   formatter: "plaintext",
+            // },
+            // {
+            //   title: "PRAZO",
+            //   field: "PRAZO PROJETO",
+            //   resizable: "false",
+            //   width: "10%",
+            //   sorter: "string",
+            //   editor: false,
+            //   hozAlign: "left",
+            //   headerFilter: true,
+            //   formatter: "plaintext",
+            // },
+            // {
+            //   title: "EXECUÇÃO",
+            //   field: "EXECUÇÃO PROJETO",
+            //   resizable: "false",
+            //   width: "10%",
+            //   sorter: "string",
+            //   editor: false,
+            //   hozAlign: "left",
+            //   headerFilter: true,
+            //   formatter: "plaintext",
+            // },
           ],
         });
       });
