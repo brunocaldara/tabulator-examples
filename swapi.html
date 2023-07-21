@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swapi Examples</title>
+    <link
+      href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="main-table"></div>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
+    <!--Dependencia para lidar com datas-->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        const tableMan = new Tabulator("#main-table", {
+          ajaxURL: "https://swapi.dev/api/people",
+          ajaxConfig: {
+            method: "GET",
+            mode: "no-cors",
+            headers: {
+              "Content-type": "application/json; charset=utf-8",
+              "Access-Control-Allow-Origin": "*",
+            },
+          },
+          ajaxResponse: function (url, params, response) {
+            //url - the URL of the request
+            //params - the parameters passed with the request
+            //response - the JSON object returned in the body of the response.
+
+            console.log("response", response);
+
+            //return response.tableData; //return the tableData property of a response json object
+          },
+          responsiveLayout: "collapse",
+          pagination: "local",
+          paginationSize: 10,
+          paginationSizeSelector: [10, 25, 50, 100],
+          paginationCounter: "rows",
+          langs: {
+            default: {
+              pagination: {
+                page_size: "Exibir",
+                page_title: "Exibir",
+                first: "Primeira",
+                first_title: "Primeira",
+                last: "Última",
+                last_title: "Última",
+                prev: "Anterior",
+                prev_title: "Anterior",
+                next: "Próxima",
+                next_title: "Próxima",
+                all: "Todas",
+                counter: {
+                  showing: "Exibindo",
+                  of: "de",
+                  rows: "linhas",
+                  pages: "páginas",
+                },
+              },
+            },
+          },
+          columns: [
+            {
+              title: "Name",
+              field: "name",
+              resizable: "false",
+              width: "10%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "Gender",
+              field: "gender",
+              resizable: "false",
+              width: "5%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "Eye Color",
+              field: "eye_color",
+              resizable: "false",
+              width: "5%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: false,
+              formatter: "color",
+            },
+          ],
+        });
+
+        $("#btnSetData").on("click", () => {
+          // tableMan
+          //   .setData(tabledata)
+          //   .then(function () {
+          //     //run code after table has been successfully updated
+          //   })
+          //   .catch(function (error) {
+          //     //handle error loading data
+          //   });
+          fetch("https://swapi.dev/api/people")
+            .then((resp) => console.log("resp", resp))
+            .catch((err) => console.log("err", err));
+        });
+      });
+    </script>
+    <br />
+    <input type="button" id="btnSetData" value="Set Data" />
+  </body>
+</html>
