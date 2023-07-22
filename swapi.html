@@ -28,10 +28,12 @@
           ajaxURL: "https://swapi.dev/api/people",
           ajaxConfig: {
             method: "GET",
-            mode: "no-cors",
+            mode: "cors",
+            cache: "default",
             headers: {
+              "Accept": "application/json",
               "Content-type": "application/json; charset=utf-8",
-              "Access-Control-Allow-Origin": "*",
+              "X-Requested-With": "XMLHttpRequest",
             },
           },
           ajaxResponse: function (url, params, response) {
@@ -39,9 +41,9 @@
             //params - the parameters passed with the request
             //response - the JSON object returned in the body of the response.
 
-            console.log("response", response);
+            console.log("response", response.results);
 
-            //return response.tableData; //return the tableData property of a response json object
+            return response.results; 
           },
           responsiveLayout: "collapse",
           pagination: "local",
@@ -118,12 +120,18 @@
           //     //handle error loading data
           //   });
           fetch("https://swapi.dev/api/people")
-            .then((resp) => console.log("resp", resp))
+            .then((resp) => resp.json())
+            .then((json) => console.log(json))
             .catch((err) => console.log("err", err));
+        });
+
+        $("#btnSetDataFetch").on("click", () => {
+
         });
       });
     </script>
     <br />
     <input type="button" id="btnSetData" value="Set Data" />
+    <input type="button" id="btnSetDataFetch" value="Set Data Fetch" />
   </body>
 </html>
