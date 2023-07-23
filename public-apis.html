@@ -1,186 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Public Apis Examples</title>
+    <link
+      href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Public Apis Examples</title>
-  <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-</head>
+  <body>
+    <div id="main-table"></div>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!--Dependencia para lidar com datas-->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script> -->
+    <script>
+      $(document).ready(function () {
+        const baseUrl = "https://api.publicapis.org";
+        const entriesUrl = `${baseUrl}/entries`;
+        const categoriesUrl = `${baseUrl}/categories`;
+        let tableEntries = [];
+        let selectedAuth = "";
+        let selectedHttps = "";
+        let selectedCors = "";
+        let selectedCategory = "";
 
-<body>
-  <div id="main-table"></div>
-  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <!--Dependencia para lidar com datas-->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script> -->
-  <script>
-    $(document).ready(function () {
-      const baseUrl = 'https://api.publicapis.org';
-      const entriesUrl = `${baseUrl}/entries`;
-      const categoriesUrl = `${baseUrl}/categories`;
-      let tableEntries = [];
+        $.getJSON(categoriesUrl, (data) => {
+          const categories = data.categories || [];
 
-      const printIcon = (cell, formatterParams) => {
-        const cellValue = cell._cell.value || '';
+          $("#selCategory").append('<option value="">All Categories</option>');
+          $.each(categories, (index, item) => {
+            $("#selCategory").append(
+              "<option value=" + item + ">" + item + "</option>"
+            );
+          });
+        });
 
-        return `<i class='fa fa-thumbs-o-${cellValue === 'yes' ? 'up' : 'down'}'></i>`;
-      };
+        const buildParams = () => {
+          let url = "?";
+          url += selectedAuth ? `auth=${selectedAuth}&` : "";
+          url += selectedHttps ? `https=${selectedHttps}&` : "";
+          url += selectedCors ? `cors=${selectedCors}&` : "";
+          url += selectedCategory ? `category=${selectedCategory}&` : "";
 
-      const mainTable = new Tabulator("#main-table", {
-        data: tableEntries,
-        responsiveLayout: "collapse",
-        pagination: "local",
-        paginationSize: 10,
-        paginationSizeSelector: [10, 25, 50, 100],
-        paginationCounter: "rows",
-        langs: {
-          default: {
-            pagination: {
-              page_size: "Exibir",
-              page_title: "Exibir",
-              first: "Primeira",
-              first_title: "Primeira",
-              last: "Última",
-              last_title: "Última",
-              prev: "Anterior",
-              prev_title: "Anterior",
-              next: "Próxima",
-              next_title: "Próxima",
-              all: "Todas",
-              counter: {
-                showing: "Exibindo",
-                of: "de",
-                rows: "linhas",
-                pages: "páginas",
+          return url;
+        };
+
+        const getDataEntries = () => {
+          let url = entriesUrl + buildParams();
+
+          console.log("url", url);
+
+          fetch(url)
+            .then((resp) => resp.json())
+            .then((json) => {
+              console.log(json);
+              tableEntries = json.entries || [];
+              console.log("tableEntries", tableEntries);
+
+              mainTable.setData(tableEntries);
+            })
+            .catch((err) => console.log("err", err));
+        };
+
+        const template = document.createElement("template");
+        template.innerHTML =
+          '<div style="display:inline-block;" class="d-flex flex-row">' +
+          "<div>Loading... </div>" +
+          '<div class="ml-2 activity-sm" data-role="activity" data-type="atom" data-style="dark"></div>' +
+          "</div>";
+        const dataLoaderLoading = template.content.firstChild;
+
+        const mainTable = new Tabulator("#main-table", {
+          data: tableEntries,
+          responsiveLayout: "collapse",
+          pagination: "local",
+          paginationSize: 10,
+          paginationSizeSelector: [10, 25, 50, 100],
+          paginationCounter: "rows",
+          langs: {
+            default: {
+              data: {
+                loading: "Loading", //data loader text
+                error: "Error", //data error text
+              },
+              pagination: {
+                page_size: "Exibir",
+                page_title: "Exibir",
+                first: "Primeira",
+                first_title: "Primeira",
+                last: "Última",
+                last_title: "Última",
+                prev: "Anterior",
+                prev_title: "Anterior",
+                next: "Próxima",
+                next_title: "Próxima",
+                all: "Todas",
+                counter: {
+                  showing: "Exibindo",
+                  of: "de",
+                  rows: "linhas",
+                  pages: "páginas",
+                },
               },
             },
           },
-        },
-        columns: [
-          {
-            title: "Api",
-            field: "API",
-            resizable: "false",
-            width: "5%",
-            sorter: "string",
-            editor: false,
-            hozAlign: "left",
-            headerFilter: true,
-            formatter: "plaintext",
-          },
-          {
-            title: "Description",
-            field: "Description",
-            resizable: "false",
-            width: "20%",
-            sorter: "string",
-            editor: false,
-            hozAlign: "left",
-            headerFilter: true,
-            formatter: "plaintext",
-          },
-          {
-            title: "Auth",
-            field: "Auth",
-            resizable: "false",
-            width: "5%",
-            sorter: "string",
-            editor: false,
-            hozAlign: "left",
-            headerFilter: true,
-            formatter: "plaintext",
-          },
-          {
-            title: "Https",
-            field: "HTTPS",
-            resizable: "false",
-            width: "5%",
-            sorter: "boolean",
-            editor: false,
-            hozAlign: "center",
-            headerFilter: true,
-            formatter: "tickCross",
-          },
-          {
-            title: "Cors",
-            field: "Cors",
-            resizable: "false",
-            width: "5%",
-            sorter: "string",
-            editor: false,
-            hozAlign: "center",
-            headerFilter: true,
-            formatter: printIcon,
-          },
-          {
-            title: "Link",
-            field: "Link",
-            resizable: "false",
-            width: "20%",
-            sorter: "string",
-            editor: false,
-            hozAlign: "left",
-            headerFilter: true,
-            formatter: "link",
-            formatterParams: {
-              target: "_blank",
+          columns: [
+            {
+              title: "Api",
+              field: "API",
+              resizable: "false",
+              width: "5%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
             },
-          },
-          {
-            title: "Category",
-            field: "Category",
-            resizable: "false",
-            width: "5%",
-            sorter: "string",
-            editor: false,
-            hozAlign: "left",
-            headerFilter: true,
-            formatter: "plaintext",
-          },
-        ],
+            {
+              title: "Description",
+              field: "Description",
+              resizable: "false",
+              width: "20%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "Auth",
+              field: "Auth",
+              resizable: "false",
+              width: "5%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+            {
+              title: "Https",
+              field: "HTTPS",
+              resizable: "false",
+              width: "5%",
+              sorter: "boolean",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: true,
+              formatter: "tickCross",
+            },
+            {
+              title: "Cors",
+              field: "Cors",
+              resizable: "false",
+              width: "5%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "center",
+              headerFilter: true,
+              formatter: (cell, formatterParams) => {
+                const cellValue = cell._cell.value || "";
+
+                return `<i class='fa fa-thumbs-o-${
+                  cellValue === "yes" ? "up" : "down"
+                }'></i>`;
+              },
+            },
+            {
+              title: "Link",
+              field: "Link",
+              resizable: "false",
+              width: "20%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "link",
+              formatterParams: {
+                target: "_blank",
+              },
+            },
+            {
+              title: "Category",
+              field: "Category",
+              resizable: "false",
+              width: "5%",
+              sorter: "string",
+              editor: false,
+              hozAlign: "left",
+              headerFilter: true,
+              formatter: "plaintext",
+            },
+          ],
+        });
+
+        mainTable.on("dataLoading", function (data) {
+          //data - the data loading into the table
+          console.log("data Loading");
+        });
+
+        mainTable.on("dataLoadError", function (error) {
+          //error - the returned error object
+          console.log("data error");
+        });
+
+        mainTable.on("dataLoaded", function (data) {
+          //data - all data loaded into the table
+          console.log("data Loaded");
+        });
+
+        $("#btnSetData").on("click", () => {
+          // mainTable
+          //   .setData(tabledata)
+          //   .then(function () {
+          //     //run code after table has been successfully updated
+          //   })
+          //   .catch(function (error) {
+          //     //handle error loading data
+          //   });
+
+          getDataEntries();
+        });
+
+        $("#btnClearFilters").on("click", () => {
+          $("#selAuth").val("").change();
+          $("#selHttps").val("").change();
+          $("#selCors").val("").change();
+          $("#selCategory").val("").change();
+
+          //getDataEntries();
+        });
+
+        $("#selAuth").on("change", (event) => {
+          selectedAuth = event.target.value;
+          console.log("selectedAuth", selectedAuth);
+          console.log("selectedHttps", selectedHttps);
+          console.log("selectedCors", selectedCors);
+          console.log("selectedCategory", selectedCategory);
+        });
+        $("#selHttps").on("change", (event) => {
+          selectedHttps = event.target.value;
+        });
+        $("#selCors").on("change", (event) => {
+          selectedCors = event.target.value;
+        });
+        $("#selCategory").on("change", (event) => {
+          selectedCategory = event.target.value;
+        });
+        $("select").on("change", () => {
+          getDataEntries();
+        });
+
+        //Call to populate grid on open page
+        //getDataEntries();
       });
-
-      $("#btnSetData").on("click", () => {
-        // mainTable
-        //   .setData(tabledata)
-        //   .then(function () {
-        //     //run code after table has been successfully updated
-        //   })
-        //   .catch(function (error) {
-        //     //handle error loading data
-        //   });
-        fetch("https://api.publicapis.org/entries")
-          .then((resp) => resp.json())
-          .then((json) => {
-            console.log(json);
-            tableEntries = json.entries || [];
-            console.log('tableEntries', tableEntries)
-
-            mainTable.setData(tableEntries)
-          })
-          .catch((err) => console.log("err", err));
-      });
-
-      $("#selPage").on("change", (event) => {
-        const page = event.target.value ? `?page=${event.target.value}` : '';
-        console.log('page', page);
-
-        mainTable.setData(apiUrl + page);
-      });
-    });
-  </script>
-  <br />
-  <input type="button" id="btnSetData" value="Set Data" />
-  <label for="selPage">Choose a Page:</label>
-  <select id="selPage" name="selPage">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </select>
-</body>
-
+    </script>
+    <br />
+    <input type="button" id="btnSetData" value="Set Data" />
+    <input type="button" id="btnClearFilters" value="Clear Filters" />
+    <label for="selAuth">Auth:</label>
+    <select id="selAuth" name="selAuth">
+      <option value="">All Values</option>
+      <option value="apiKey">Api Key</option>
+      <option value="OAuth">OAuth</option>
+    </select>
+    <label for="selHttps">Https:</label>
+    <select id="selHttps" name="selHttps">
+      <option value="">All Values</option>
+      <option value="true">True</option>
+      <option value="false">False</option>
+    </select>
+    <label for="selCors">Cors:</label>
+    <select id="selCors" name="selCors">
+      <option value="">All Values</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+      <option value="unknown">Unknown</option>
+    </select>
+    <label for="selCategory">Category:</label>
+    <select id="selCategory" name="selCategory"></select>
+    <div id="wrapper1">Template1</div>
+  </body>
 </html>
