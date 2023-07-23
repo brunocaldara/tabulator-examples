@@ -6,13 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Public Apis Examples</title>
   <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 </head>
 
 <body>
   <div id="main-table"></div>
   <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
   <!--Dependencia para lidar com datas-->
   <!-- <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script> -->
   <script>
@@ -20,33 +20,16 @@
       const baseUrl = 'https://api.publicapis.org';
       const entriesUrl = `${baseUrl}/entries`;
       const categoriesUrl = `${baseUrl}/categories`;
+      let tableEntries = [];
 
       const printIcon = (cell, formatterParams) => {
-        return "<i class='fa fa-print'></i>";
+        const cellValue = cell._cell.value || '';
+
+        return `<i class='fa fa-thumbs-o-${cellValue === 'yes' ? 'up' : 'down'}'></i>`;
       };
 
       const mainTable = new Tabulator("#main-table", {
-        ajaxURL: entriesUrl,
-        ajaxConfig: {
-          method: "GET",
-          mode: "cors",
-          cache: "default",
-          headers: {
-            Accept: "application/json",
-            "Content-type": "application/json; charset=utf-8",
-            "X-Requested-With": "XMLHttpRequest",
-            "Access-Control-Allow-Origin": "*",
-          },
-        },
-        ajaxResponse: (url, params, response) => {
-          //url - the URL of the request
-          //params - the parameters passed with the request
-          //response - the JSON object returned in the body of the response.
-
-          console.log("response", response.entries);
-
-          return response.entries;
-        },
+        data: tableEntries,
         responsiveLayout: "collapse",
         pagination: "local",
         paginationSize: 10,
@@ -80,7 +63,7 @@
             title: "Api",
             field: "API",
             resizable: "false",
-            width: "10%",
+            width: "5%",
             sorter: "string",
             editor: false,
             hozAlign: "left",
@@ -91,7 +74,7 @@
             title: "Description",
             field: "Description",
             resizable: "false",
-            width: "5%",
+            width: "20%",
             sorter: "string",
             editor: false,
             hozAlign: "left",
@@ -116,7 +99,7 @@
             width: "5%",
             sorter: "boolean",
             editor: false,
-            hozAlign: "left",
+            hozAlign: "center",
             headerFilter: true,
             formatter: "tickCross",
           },
@@ -127,7 +110,7 @@
             width: "5%",
             sorter: "string",
             editor: false,
-            hozAlign: "left",
+            hozAlign: "center",
             headerFilter: true,
             formatter: printIcon,
           },
@@ -135,14 +118,13 @@
             title: "Link",
             field: "Link",
             resizable: "false",
-            width: "5%",
+            width: "20%",
             sorter: "string",
             editor: false,
             hozAlign: "left",
             headerFilter: true,
             formatter: "link",
             formatterParams: {
-              labelField: "site",
               target: "_blank",
             },
           },
@@ -171,7 +153,13 @@
         //   });
         fetch("https://api.publicapis.org/entries")
           .then((resp) => resp.json())
-          .then((json) => console.log(json))
+          .then((json) => {
+            console.log(json);
+            tableEntries = json.entries || [];
+            console.log('tableEntries', tableEntries)
+
+            mainTable.setData(tableEntries)
+          })
           .catch((err) => console.log("err", err));
       });
 
