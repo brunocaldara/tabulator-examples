@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Public Apis Examples</title>
+  <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div id="main-table"></div>
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+    integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+  <!--Dependencia para lidar com datas-->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script> -->
+  <script>
+    $(document).ready(function () {
+      const baseUrl = 'https://api.publicapis.org';
+      const entriesUrl = `${baseUrl}/entries`;
+      const categoriesUrl = `${baseUrl}/categories`;
+
+      const printIcon = (cell, formatterParams) => {
+        return "<i class='fa fa-print'></i>";
+      };
+
+      const mainTable = new Tabulator("#main-table", {
+        ajaxURL: entriesUrl,
+        ajaxConfig: {
+          method: "GET",
+          mode: "cors",
+          cache: "default",
+          headers: {
+            Accept: "application/json",
+            "Content-type": "application/json; charset=utf-8",
+            "X-Requested-With": "XMLHttpRequest",
+            "Access-Control-Allow-Origin": "*",
+          },
+        },
+        ajaxResponse: (url, params, response) => {
+          //url - the URL of the request
+          //params - the parameters passed with the request
+          //response - the JSON object returned in the body of the response.
+
+          console.log("response", response.entries);
+
+          return response.entries;
+        },
+        responsiveLayout: "collapse",
+        pagination: "local",
+        paginationSize: 10,
+        paginationSizeSelector: [10, 25, 50, 100],
+        paginationCounter: "rows",
+        langs: {
+          default: {
+            pagination: {
+              page_size: "Exibir",
+              page_title: "Exibir",
+              first: "Primeira",
+              first_title: "Primeira",
+              last: "Última",
+              last_title: "Última",
+              prev: "Anterior",
+              prev_title: "Anterior",
+              next: "Próxima",
+              next_title: "Próxima",
+              all: "Todas",
+              counter: {
+                showing: "Exibindo",
+                of: "de",
+                rows: "linhas",
+                pages: "páginas",
+              },
+            },
+          },
+        },
+        columns: [
+          {
+            title: "Api",
+            field: "API",
+            resizable: "false",
+            width: "10%",
+            sorter: "string",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: "plaintext",
+          },
+          {
+            title: "Description",
+            field: "Description",
+            resizable: "false",
+            width: "5%",
+            sorter: "string",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: "plaintext",
+          },
+          {
+            title: "Auth",
+            field: "Auth",
+            resizable: "false",
+            width: "5%",
+            sorter: "string",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: "plaintext",
+          },
+          {
+            title: "Https",
+            field: "HTTPS",
+            resizable: "false",
+            width: "5%",
+            sorter: "boolean",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: "tickCross",
+          },
+          {
+            title: "Cors",
+            field: "Cors",
+            resizable: "false",
+            width: "5%",
+            sorter: "string",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: printIcon,
+          },
+          {
+            title: "Link",
+            field: "Link",
+            resizable: "false",
+            width: "5%",
+            sorter: "string",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: "link",
+            formatterParams: {
+              labelField: "site",
+              target: "_blank",
+            },
+          },
+          {
+            title: "Category",
+            field: "Category",
+            resizable: "false",
+            width: "5%",
+            sorter: "string",
+            editor: false,
+            hozAlign: "left",
+            headerFilter: true,
+            formatter: "plaintext",
+          },
+        ],
+      });
+
+      $("#btnSetData").on("click", () => {
+        // mainTable
+        //   .setData(tabledata)
+        //   .then(function () {
+        //     //run code after table has been successfully updated
+        //   })
+        //   .catch(function (error) {
+        //     //handle error loading data
+        //   });
+        fetch("https://api.publicapis.org/entries")
+          .then((resp) => resp.json())
+          .then((json) => console.log(json))
+          .catch((err) => console.log("err", err));
+      });
+
+      $("#selPage").on("change", (event) => {
+        const page = event.target.value ? `?page=${event.target.value}` : '';
+        console.log('page', page);
+
+        mainTable.setData(apiUrl + page);
+      });
+    });
+  </script>
+  <br />
+  <input type="button" id="btnSetData" value="Set Data" />
+  <label for="selPage">Choose a Page:</label>
+  <select id="selPage" name="selPage">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+</body>
+
+</html>
