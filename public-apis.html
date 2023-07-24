@@ -21,9 +21,11 @@
       src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"
     ></script>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <!--Dependencia para lidar com datas-->
     <!-- <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script> -->
     <script>
+      //$(document).ajaxStop($.unblockUI);
       $(document).ready(function () {
         const baseUrl = "https://api.publicapis.org";
         const entriesUrl = `${baseUrl}/entries`;
@@ -60,25 +62,26 @@
 
           console.log("url", url);
 
+          $.blockUI({
+            message:
+              '<h4><img src="assets/img/busy.gif" /> Aguarde, carregando dados...</h4>',
+          });
+
           fetch(url)
             .then((resp) => resp.json())
             .then((json) => {
+              $.unblockUI();
               console.log(json);
               tableEntries = json.entries || [];
               console.log("tableEntries", tableEntries);
 
               mainTable.setData(tableEntries);
             })
-            .catch((err) => console.log("err", err));
+            .catch((err) => {
+              $.unblockUI();
+              console.log("err", err);
+            });
         };
-
-        const template = document.createElement("template");
-        template.innerHTML =
-          '<div style="display:inline-block;" class="d-flex flex-row">' +
-          "<div>Loading... </div>" +
-          '<div class="ml-2 activity-sm" data-role="activity" data-type="atom" data-style="dark"></div>' +
-          "</div>";
-        const dataLoaderLoading = template.content.firstChild;
 
         const mainTable = new Tabulator("#main-table", {
           data: tableEntries,
@@ -219,6 +222,11 @@
           console.log("data Loaded");
         });
 
+        mainTable.on("dataChanged", function (data) {
+          //data - the updated table data
+          console.log("data Changed");
+        });
+
         $("#btnSetData").on("click", () => {
           // mainTable
           //   .setData(tabledata)
@@ -289,6 +297,5 @@
     </select>
     <label for="selCategory">Category:</label>
     <select id="selCategory" name="selCategory"></select>
-    <div id="wrapper1">Template1</div>
   </body>
 </html>
